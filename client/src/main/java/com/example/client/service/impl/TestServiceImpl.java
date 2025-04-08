@@ -1,5 +1,6 @@
-package com.example.client.service;
+package com.example.client.service.impl;
 
+import com.example.client.service.ITestService;
 import com.example.grpc.GreeterGrpc;
 import com.example.grpc.HelloRequest;
 import net.devh.boot.grpc.client.inject.GrpcClient;

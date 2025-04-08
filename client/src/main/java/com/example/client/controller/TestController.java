@@ -14,8 +14,7 @@ public class TestController {
     private ITestService testService;
 
 
-
-    @PostMapping("sayHello")
+    @PostMapping("/sayHello")
     public String sayHello(@RequestBody HelloRequest request){
         return testService.message(request);
     }
