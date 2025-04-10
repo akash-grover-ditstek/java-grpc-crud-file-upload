@@ -16,11 +16,13 @@ message OrderResponse {
     string status = 4;
 }
 
+message blank{}
+
 service OrderService {
     rpc CreateOrder(OrderRequest) returns (OrderResponse);
     rpc GetOrder(OrderRequest) returns (OrderResponse);
     rpc UpdateOrder(OrderRequest) returns (OrderResponse);
     rpc DeleteOrder(OrderRequest) returns (OrderResponse);
 
-    rpc GetOrderStream(OrderRequest) returns (stream OrderResponse);
+    rpc GetOrderStream(blank) returns (stream OrderResponse);
 }

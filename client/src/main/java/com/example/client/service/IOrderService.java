@@ -15,5 +15,5 @@ public interface IOrderService {
 
     ClientOrderResponse deleteOrder(int orderId);
 
-    CompletableFuture<List<ClientOrderResponse>> getOrderStream();
+    List<OrderResponse> getOrderStream();
 }

@@ -6,19 +6,23 @@ import com.example.client.service.IOrderService;
 import com.example.grpc.OrderRequest;
 import com.example.grpc.OrderResponse;
 import com.example.grpc.OrderServiceGrpc;
+import com.example.grpc.blank;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 @Service
 public class OrderClientServiceImpl implements IOrderService {
 
     @GrpcClient("grpc-client")
     private OrderServiceGrpc.OrderServiceBlockingStub orderServiceBlockingStub;
+
+    @GrpcClient("grpc-client")
     private OrderServiceGrpc.OrderServiceStub orderServiceAsyncStub;
 
     @Override
@@ -81,37 +85,34 @@ public class OrderClientServiceImpl implements IOrderService {
     }
 
     @Override
-    public CompletableFuture<List<ClientOrderResponse>> getOrderStream() {
+    public List<OrderResponse> getOrderStream() {
+        List<OrderResponse> clientOrderList = Collections.synchronizedList(new ArrayList<>());
+        CountDownLatch latch = new CountDownLatch(1);
 
-        CompletableFuture<List<ClientOrderResponse>> future = new CompletableFuture<>();
-
-        List<ClientOrderResponse> responses = new ArrayList<>();
-
-        orderServiceAsyncStub.getOrderStream(OrderRequest.newBuilder().build(), new StreamObserver<OrderResponse>() {
+        orderServiceAsyncStub.getOrderStream(blank.newBuilder().build(), new StreamObserver<OrderResponse>() {
             @Override
-            public void onNext(OrderResponse orderResponse) {
-                ClientOrderResponse response = new ClientOrderResponse.ClientOrderResponseBuilder()
-                        .setOrderId(orderResponse.getOrderId())
-                        .setItem(orderResponse.getItem())
-                        .setPrice(orderResponse.getPrice())
-                        .setStatus(orderResponse.getStatus())
-                        .build();
-                responses.add(response);
+            public void onNext(OrderResponse value) {
+                clientOrderList.add(value);
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                future.completeExceptionally(throwable);
+            public void onError(Throwable t) {
+                latch.countDown();
             }
 
             @Override
             public void onCompleted() {
-                future.complete(responses);
+                latch.countDown();
             }
         });
 
-        return future;
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Stream interrupted", e);
+        }
 
+        return clientOrderList;
     }
-
 }

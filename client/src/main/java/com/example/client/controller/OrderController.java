@@ -3,14 +3,12 @@ package com.example.client.controller;
 import com.example.client.dto.ClientOrderRequest;
 import com.example.client.dto.ClientOrderResponse;
 import com.example.client.service.impl.OrderClientServiceImpl;
-import com.example.grpc.OrderRequest;
 import com.example.grpc.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/order")
@@ -44,8 +42,8 @@ public class OrderController {
     }
 
     @GetMapping("/getOrderStream")
-    public ResponseEntity<CompletableFuture<List<ClientOrderResponse>>> orderStream() {
-        CompletableFuture<List<ClientOrderResponse>> response = orderService.getOrderStream();
+    public ResponseEntity<List<OrderResponse>> orderStream() {
+        List<OrderResponse> response = orderService.getOrderStream();
         return ResponseEntity.ok(response);
     }
 

@@ -3,10 +3,12 @@ package com.example.server.services;
 import com.example.grpc.OrderRequest;
 import com.example.grpc.OrderResponse;
 import com.example.grpc.OrderServiceGrpc;
+import com.example.grpc.blank;
 import com.example.server.entity.Order;
 import com.example.server.repository.OrderRepository;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @GrpcService
+@Slf4j
 public class OrderService extends OrderServiceGrpc.OrderServiceImplBase {
 
     @Autowired
@@ -21,6 +24,7 @@ public class OrderService extends OrderServiceGrpc.OrderServiceImplBase {
 
     @Override
     public void createOrder(OrderRequest request, StreamObserver<OrderResponse> responseObserver) {
+        System.out.println("✅ Received createOrder request: " + request);
         Order order = new Order();
         order.setItem(request.getItem());
         order.setPrice(request.getPrice());
@@ -122,8 +126,7 @@ public class OrderService extends OrderServiceGrpc.OrderServiceImplBase {
     }
 
     @Override
-    public void getOrderStream(OrderRequest request, StreamObserver<OrderResponse> responseObserver) {
-
+    public void getOrderStream(blank request, StreamObserver<OrderResponse> responseObserver) {
         List<Order> orders = orderRepository.findAll();
 
         for (Order order : orders) {
@@ -137,6 +140,27 @@ public class OrderService extends OrderServiceGrpc.OrderServiceImplBase {
         }
 
         responseObserver.onCompleted();
-
+        log.info("Streaming Completed");
     }
+//
+//    @Override
+//    public void getOrderStream(OrderRequest request, StreamObserver<OrderResponse> responseObserver) {
+//
+//        List<Order> orders = orderRepository.findAll();
+//
+//        for (Order order : orders) {
+//            OrderResponse response = OrderResponse.newBuilder()
+//                    .setItem(order.getItem())
+//                    .setPrice(order.getPrice())
+//                    .setStatus(order.getStatus())
+//                    .build();
+//
+//            responseObserver.onNext(response);
+//        }
+//
+//        responseObserver.onCompleted();
+//
+//    }
+
+
 }
