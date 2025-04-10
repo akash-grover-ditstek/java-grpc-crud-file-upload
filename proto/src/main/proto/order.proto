@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_package = "com.example.grpc";
+option java_multiple_files = true;
+
+message OrderRequest {
+    int32 order_id = 1;
+    string item = 2;
+    double price = 3;
+}
+
+message OrderResponse {
+    int32 order_id = 1;
+    string item = 2;
+    double price = 3;
+    string status = 4;
+}
+
+message blank{}
+
+service OrderService {
+    rpc CreateOrder(OrderRequest) returns (OrderResponse);
+    rpc GetOrder(OrderRequest) returns (OrderResponse);
+    rpc UpdateOrder(OrderRequest) returns (OrderResponse);
+    rpc DeleteOrder(OrderRequest) returns (OrderResponse);
+
+    rpc GetOrderStream(blank) returns (stream OrderResponse);
+}
