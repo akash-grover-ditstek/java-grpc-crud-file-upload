@@ -2,10 +2,12 @@ package com.example.client.service.impl;
 
 import com.example.client.dto.ClientOrderRequest;
 import com.example.client.dto.ClientOrderResponse;
+import com.example.client.exception.OrderNotFoundException;
 import com.example.client.service.IOrderService;
 import com.example.grpc.OrderRequest;
 import com.example.grpc.OrderResponse;
 import com.example.grpc.OrderServiceGrpc;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class OrderClientServiceImpl implements IOrderService {
 
     @GrpcClient("grpc-client")
     private OrderServiceGrpc.OrderServiceBlockingStub orderServiceBlockingStub;
+
+    @GrpcClient("grpc-client")
     private OrderServiceGrpc.OrderServiceStub orderServiceAsyncStub;
 
     @Override
@@ -42,7 +46,11 @@ public class OrderClientServiceImpl implements IOrderService {
     public OrderResponse getOrder(int orderId) {
         OrderRequest request = OrderRequest.newBuilder().setOrderId(orderId).build();
 
-        return orderServiceBlockingStub.getOrder(request);
+        try {
+            return orderServiceBlockingStub.getOrder(request);
+        } catch (StatusRuntimeException e) {
+            throw new OrderNotFoundException("Order not found with ID: " + orderId);
+        }
     }
 
     @Override
@@ -71,14 +79,19 @@ public class OrderClientServiceImpl implements IOrderService {
                 .setOrderId(orderId)
                 .build();
 
-        var grpcResponse = orderServiceBlockingStub.deleteOrder(grpcRequest);
+        try {
+            var grpcResponse = orderServiceBlockingStub.deleteOrder(grpcRequest);
 
-        ClientOrderResponse response = new ClientOrderResponse.ClientOrderResponseBuilder()
-                .setOrderId(grpcResponse.getOrderId())
-                .setStatus(grpcResponse.getStatus())
-                .build();
-        return response;
+            return new ClientOrderResponse.ClientOrderResponseBuilder()
+                    .setOrderId(grpcResponse.getOrderId())
+                    .setStatus(grpcResponse.getStatus())
+                    .build();
+
+        } catch (StatusRuntimeException e) {
+            throw new OrderNotFoundException("No Order found for this ID: " + orderId);
+        }
     }
+
 
     @Override
     public CompletableFuture<List<ClientOrderResponse>> getOrderStream() {
