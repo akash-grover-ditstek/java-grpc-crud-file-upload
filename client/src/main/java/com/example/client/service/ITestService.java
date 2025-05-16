@@ -1,6 +1,7 @@
 package com.example.client.service;
 
-import com.example.grpc.HelloRequest;
+
+import com.example.grpc.greeter.HelloRequest;
 
 public interface ITestService {
 

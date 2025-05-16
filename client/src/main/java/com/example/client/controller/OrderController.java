@@ -3,7 +3,7 @@ package com.example.client.controller;
 import com.example.client.dto.ClientOrderRequest;
 import com.example.client.dto.ClientOrderResponse;
 import com.example.client.service.impl.OrderClientServiceImpl;
-import com.example.grpc.OrderResponse;
+import com.example.grpc.order.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

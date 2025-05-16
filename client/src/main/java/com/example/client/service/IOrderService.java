@@ -2,7 +2,7 @@ package com.example.client.service;
 
 import com.example.client.dto.ClientOrderRequest;
 import com.example.client.dto.ClientOrderResponse;
-import com.example.grpc.OrderResponse;
+import com.example.grpc.order.OrderResponse;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

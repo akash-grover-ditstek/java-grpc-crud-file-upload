@@ -1,8 +1,8 @@
 package com.example.server.services;
 
-import com.example.grpc.GreeterGrpc;
-import com.example.grpc.HelloReply;
-import com.example.grpc.HelloRequest;
+import com.example.grpc.greeter.GreeterGrpc;
+import com.example.grpc.greeter.HelloReply;
+import com.example.grpc.greeter.HelloRequest;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 

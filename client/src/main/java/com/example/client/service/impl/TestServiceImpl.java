@@ -1,8 +1,8 @@
 package com.example.client.service.impl;
 
 import com.example.client.service.ITestService;
-import com.example.grpc.GreeterGrpc;
-import com.example.grpc.HelloRequest;
+import com.example.grpc.greeter.GreeterGrpc;
+import com.example.grpc.greeter.HelloRequest;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 

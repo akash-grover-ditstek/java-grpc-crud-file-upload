@@ -1,7 +1,7 @@
 package com.example.client.controller;
 
 import com.example.client.service.ITestService;
-import com.example.grpc.HelloRequest;
+import com.example.grpc.greeter.HelloRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

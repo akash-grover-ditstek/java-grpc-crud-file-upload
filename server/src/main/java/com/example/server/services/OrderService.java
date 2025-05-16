@@ -1,8 +1,8 @@
 package com.example.server.services;
 
-import com.example.grpc.OrderRequest;
-import com.example.grpc.OrderResponse;
-import com.example.grpc.OrderServiceGrpc;
+import com.example.grpc.order.OrderRequest;
+import com.example.grpc.order.OrderResponse;
+import com.example.grpc.order.OrderServiceGrpc;
 import com.example.server.entity.Order;
 import com.example.server.repository.OrderRepository;
 import io.grpc.Status;
